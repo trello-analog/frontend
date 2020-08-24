@@ -22,9 +22,6 @@ const validateMessages = {
     types: {
         email: "Невалидный e-mail",
     },
-    email: {
-        range: "Длина поля ${label} должна быть не менее 6 и не более 100 символов",
-    },
 };
 
 export const ForgotPassword = () => {
@@ -35,7 +32,7 @@ export const ForgotPassword = () => {
                     Введите e-mail аккаунта, к которому вы хотите получить доступ
                 </Typography.Text>
                 <Form.Item name={"email"} label={"Email"} rules={[{ required: true }]}>
-                    <Input />
+                    <Input placeholder={"Email"} />
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" className={styles.button}>
