@@ -1,8 +1,9 @@
 import React from "react";
-import { css } from "emotion";
-import { Button, Form, Input } from "antd";
-import { Link } from "react-router-dom";
 import { PublicRouteLayout } from "../components/PublicRouteLayout";
+import { Button, Form, Input } from "antd";
+import { css } from "emotion";
+import { Typography } from "antd";
+import { Link } from "react-router-dom";
 
 const styles = {
     button: css`
@@ -17,35 +18,34 @@ const styles = {
 };
 
 const validateMessages = {
-    required: "${label} обязательно для заполнения",
-    string: {
+    required: "${label} обязателен для заполнения",
+    types: {
+        email: "Невалидный e-mail",
+    },
+    email: {
         range: "Длина поля ${label} должна быть не менее 6 и не более 100 символов",
     },
 };
 
-export const Login = () => {
+export const ForgotPassword = () => {
     return (
         <PublicRouteLayout>
             <Form validateMessages={validateMessages} onFinish={console.log} layout="vertical">
-                <Form.Item name={"login"} label={"Email или логин"} rules={[{ required: true }]}>
+                <Typography.Text>
+                    Введите e-mail аккаунта, к которому вы хотите получить доступ
+                </Typography.Text>
+                <Form.Item name={"email"} label={"Email"} rules={[{ required: true }]}>
                     <Input />
-                </Form.Item>
-                <Form.Item
-                    name={"password"}
-                    label={"Пароль"}
-                    rules={[{ type: "string", min: 6, max: 100, required: true }]}
-                >
-                    <Input.Password />
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" className={styles.button}>
-                        Войти
+                        Отправить
                     </Button>
                 </Form.Item>
                 <div className={styles.actions}>
                     <Link to={"/registration"}>Регистрация</Link>
-                    <Link className={styles.right} to={"/forgot-password"}>
-                        Забыл пароль
+                    <Link className={styles.right} to={"/lofin"}>
+                        Войти
                     </Link>
                 </div>
             </Form>
