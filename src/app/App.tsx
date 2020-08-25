@@ -3,6 +3,11 @@ import { Route, Switch } from "react-router";
 import { Login } from "../pages";
 import { ForgotPassword } from "../pages/ForgotPassword";
 import { Registration } from "../pages/Registration";
+import { IConfig } from "../entity";
+import { transport } from "../services/Transport";
+
+const config: IConfig = require("../config/config.json");
+transport.init(config.serverUrl);
 
 export const App = () => {
     return (

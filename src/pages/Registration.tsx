@@ -72,7 +72,7 @@ export const Registration = () => {
                     <Input.Password placeholder={"Повтор пароля"} />
                 </Form.Item>
                 <Form.Item name={"twoAuth"} valuePropName={"checked"}>
-                    <Checkbox>Двухфакторная авторизация</Checkbox>
+                    <Checkbox>Двухфакторная аутентификация</Checkbox>
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" className={styles.button}>
