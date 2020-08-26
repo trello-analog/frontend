@@ -1,10 +1,8 @@
 import React from "react";
 import { Route, Switch } from "react-router";
-import { Login } from "../pages";
-import { ForgotPassword } from "../pages/ForgotPassword";
-import { Registration } from "../pages/Registration";
+import { Login, ForgotPassword, Registration, RestorePassword } from "../pages";
 import { IConfig } from "../entity";
-import { transport } from "../services/Transport";
+import { transport } from "../services";
 
 const config: IConfig = require("../config/config.json");
 transport.init(config.serverUrl);
@@ -20,6 +18,9 @@ export const App = () => {
             </Route>
             <Route path={"/registration"} exact>
                 <Registration />
+            </Route>
+            <Route path={"/restore-password/:code"} exact>
+                <RestorePassword />
             </Route>
         </Switch>
     );

@@ -1,8 +1,9 @@
-import { transport } from "../services/Transport";
+import { transport } from "../services";
 import {
     ICreateUserRequest,
     ICreateUserResponse,
     IResponse,
+    IRestorePasswordRequest,
     ISignInRequest,
     IToken,
     IUser,
@@ -24,6 +25,10 @@ export function send2AuthCode(code: string) {
     return transport.post<IToken, { code: string }>("/auth/twoAuth", { code });
 }
 
-export function forgotPassword(email: string) {
+export function sendRestoringEmail(email: string) {
     return transport.post<IResponse, { email: string }>("/auth/forgot-password", { email });
+}
+
+export function restorePassword(data: IRestorePasswordRequest) {
+    return transport.post<IResponse, IRestorePasswordRequest>("/auth/restore-password", data);
 }

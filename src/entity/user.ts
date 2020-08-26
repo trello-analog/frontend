@@ -24,3 +24,8 @@ export interface IUser extends IId {
 export interface IUserRole extends IId {
     name: string;
 }
+
+export interface IRestorePasswordRequest {
+    code: string;
+    newPassword: string;
+}

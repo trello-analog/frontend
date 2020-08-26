@@ -1,13 +1,10 @@
 import React from "react";
 import { css } from "emotion";
-import { Button, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import { Link } from "react-router-dom";
-import { PublicRouteLayout } from "../components/PublicRouteLayout";
+import { PublicRouteLayout, Page, Button } from "../components";
 
 const styles = {
-    button: css`
-        width: 100%;
-    `,
     actions: css`
         display: flex;
     `,
@@ -28,30 +25,36 @@ const validateMessages = {
 
 export const Login = () => {
     return (
-        <PublicRouteLayout>
-            <Form validateMessages={validateMessages} onFinish={console.log} layout="vertical">
-                <Form.Item name={"login"} label={"Email или логин"} rules={[{ required: true }]}>
-                    <Input placeholder={"Логин или email"} />
-                </Form.Item>
-                <Form.Item
-                    name={"password"}
-                    label={"Пароль"}
-                    rules={[{ type: "string", min: 6, max: 100, required: true }]}
-                >
-                    <Input.Password placeholder={"Пароль"} />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" className={styles.button}>
-                        Войти
-                    </Button>
-                </Form.Item>
-                <div className={styles.actions}>
-                    <Link to={"/registration"}>Регистрация</Link>
-                    <Link className={styles.right} to={"/forgot-password"}>
-                        Не помню пароль
-                    </Link>
-                </div>
-            </Form>
-        </PublicRouteLayout>
+        <Page title={"Войти"}>
+            <PublicRouteLayout>
+                <Form validateMessages={validateMessages} onFinish={console.log} layout="vertical">
+                    <Form.Item
+                        name={"login"}
+                        label={"Email или логин"}
+                        rules={[{ required: true }]}
+                    >
+                        <Input placeholder={"Логин или email"} />
+                    </Form.Item>
+                    <Form.Item
+                        name={"password"}
+                        label={"Пароль"}
+                        rules={[{ type: "string", min: 6, max: 100, required: true }]}
+                    >
+                        <Input.Password placeholder={"Пароль"} />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" fullWidth>
+                            Войти
+                        </Button>
+                    </Form.Item>
+                    <div className={styles.actions}>
+                        <Link to={"/registration"}>Регистрация</Link>
+                        <Link className={styles.right} to={"/forgot-password"}>
+                            Не помню пароль
+                        </Link>
+                    </div>
+                </Form>
+            </PublicRouteLayout>
+        </Page>
     );
 };
