@@ -23,7 +23,7 @@ const validateMessages = {
     },
 };
 
-export const Login = () => {
+const Login = () => {
     return (
         <Page title={"Войти"}>
             <PublicRouteLayout>
@@ -58,3 +58,5 @@ export const Login = () => {
         </Page>
     );
 };
+
+export default Login;

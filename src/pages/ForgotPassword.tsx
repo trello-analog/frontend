@@ -21,7 +21,7 @@ const validateMessages = {
     },
 };
 
-export const ForgotPassword = () => {
+const ForgotPassword = () => {
     return (
         <Page title={"Восстановление пароля"}>
             <PublicRouteLayout>
@@ -48,3 +48,5 @@ export const ForgotPassword = () => {
         </Page>
     );
 };
+
+export default ForgotPassword;

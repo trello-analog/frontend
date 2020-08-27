@@ -2,7 +2,7 @@ import React from "react";
 import { Page, Button, PublicRouteLayout } from "../components";
 import { Form, Input } from "antd";
 
-export const RestorePassword = () => {
+const RestorePassword = () => {
     return (
         <Page title={"Восстановление пароля"}>
             <PublicRouteLayout>
@@ -43,3 +43,5 @@ export const RestorePassword = () => {
         </Page>
     );
 };
+
+export default RestorePassword;

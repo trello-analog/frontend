@@ -3,6 +3,8 @@ import { Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import { PublicRouteLayout, Page, Button } from "../components";
 import { css } from "emotion";
+import { useAuth } from "../hooks";
+import { ICreateUserRequest } from "../entity";
 
 const styles = {
     actions: css`
@@ -23,7 +25,9 @@ const validateMessages = {
     },
 };
 
-export const Registration = () => {
+const Registration = () => {
+    const { signUp } = useAuth();
+
     return (
         <Page title={"Регистрация"}>
             <PublicRouteLayout>
@@ -88,3 +92,5 @@ export const Registration = () => {
         </Page>
     );
 };
+
+export default Registration;
