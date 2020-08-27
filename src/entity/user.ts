@@ -28,4 +28,15 @@ export interface IUserRole extends IId {
 export interface IRestorePasswordRequest {
     code: string;
     newPassword: string;
+    repeatNewPassword: string;
+}
+
+export interface ISignInTwoAuth {
+    message: string;
+    checkCode: string;
+}
+
+export interface ISendTwoAuthCodeRequest {
+    checkCode: string;
+    code: string;
 }
