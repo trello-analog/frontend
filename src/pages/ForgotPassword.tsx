@@ -39,7 +39,7 @@ export const ForgotPassword = () => {
                     </Form.Item>
                     <div className={styles.actions}>
                         <Link to={"/registration"}>Регистрация</Link>
-                        <Link className={styles.right} to={"/lofin"}>
+                        <Link className={styles.right} to={"/login"}>
                             Войти
                         </Link>
                     </div>
