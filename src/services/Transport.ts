@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { IResponse, IToken } from "../entity";
+import { getServerError } from "../utils";
 
 export class HttpTransport {
     private client: AxiosInstance = axios.create();
@@ -34,7 +35,7 @@ export class HttpTransport {
                     return resolve(response.data.data);
                 })
                 .catch((error) => {
-                    reject(error);
+                    reject(getServerError(error));
                     this.handlers.forEach((handler) => handler(error));
                 });
         });
@@ -48,7 +49,7 @@ export class HttpTransport {
                     return resolve(response.data.data);
                 })
                 .catch((error) => {
-                    reject(error);
+                    reject(getServerError(error));
                     this.handlers.forEach((handler) => handler(error));
                 });
         });
@@ -62,7 +63,7 @@ export class HttpTransport {
                     return resolve(response.data.data);
                 })
                 .catch((error) => {
-                    reject(error);
+                    reject(getServerError(error));
                     this.handlers.forEach((handler) => handler(error));
                 });
         });
@@ -76,7 +77,7 @@ export class HttpTransport {
                     return resolve(response.data);
                 })
                 .catch((error) => {
-                    reject(error);
+                    reject(getServerError(error));
                     this.handlers.forEach((handler) => handler(error));
                 });
         });
