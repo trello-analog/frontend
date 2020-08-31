@@ -1,23 +1,22 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { IResponse, IToken } from "../entity";
+import { IConfig, IResponse, IToken } from "../entity";
 import { getServerError } from "../utils";
 
+const config: IConfig = require("../config/config.json");
+
 export class HttpTransport {
-    private client: AxiosInstance = axios.create();
+    private client: AxiosInstance = axios.create({
+        baseURL: config.serverUrl,
+    });
+
     private token?: IToken;
     private readonly handlers: Array<(error?: Error) => void> = [];
-
-    public init(serverUrl: string): void {
-        this.client = axios.create({
-            baseURL: serverUrl,
-        });
-    }
 
     public subscribe(handler: (error?: Error) => void): void {
         this.handlers.push(handler);
     }
 
-    public setToken(token: IToken): void {
+    public async setToken(token: IToken): Promise<void> {
         this.token = token;
         localStorage.setItem("token", JSON.stringify(token));
     }
@@ -35,7 +34,10 @@ export class HttpTransport {
                     return resolve(response.data.data);
                 })
                 .catch((error) => {
-                    reject(getServerError(error));
+                    const serverError = getServerError(error);
+                    if (serverError) {
+                        reject(serverError);
+                    }
                     this.handlers.forEach((handler) => handler(error));
                 });
         });
@@ -49,7 +51,10 @@ export class HttpTransport {
                     return resolve(response.data.data);
                 })
                 .catch((error) => {
-                    reject(getServerError(error));
+                    const serverError = getServerError(error);
+                    if (serverError) {
+                        reject(serverError);
+                    }
                     this.handlers.forEach((handler) => handler(error));
                 });
         });
@@ -57,15 +62,18 @@ export class HttpTransport {
 
     public post<R, B>(url: string, body: B, params?: object): Promise<R> {
         return new Promise<R>((resolve, reject) => {
-            this.client
-                .post(url, { ...body }, this.config(params))
-                .then((response: AxiosResponse<IResponse<R>>) => {
+            this.client.post(url, { ...body }, this.config(params)).then(
+                (response: AxiosResponse<IResponse<R>>) => {
                     return resolve(response.data.data);
-                })
-                .catch((error) => {
-                    reject(getServerError(error));
+                },
+                (error: any) => {
+                    const serverError = getServerError(error);
+                    if (serverError) {
+                        reject(serverError);
+                    }
                     this.handlers.forEach((handler) => handler(error));
-                });
+                },
+            );
         });
     }
 
@@ -77,7 +85,10 @@ export class HttpTransport {
                     return resolve(response.data);
                 })
                 .catch((error) => {
-                    reject(getServerError(error));
+                    const serverError = getServerError(error);
+                    if (serverError) {
+                        reject(serverError);
+                    }
                     this.handlers.forEach((handler) => handler(error));
                 });
         });

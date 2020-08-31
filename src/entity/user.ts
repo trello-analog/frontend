@@ -1,4 +1,5 @@
 import { IId } from "./common";
+import { IToken } from "./token";
 
 export interface ICreateUserRequest {
     email: string;
@@ -31,9 +32,13 @@ export interface IRestorePasswordRequest {
     repeatNewPassword: string;
 }
 
+export interface ITokenResponse {
+    token: IToken;
+}
+
 export interface ISignInTwoAuth {
-    message: string;
     checkCode: string;
+    expired: string;
 }
 
 export interface ISendTwoAuthCodeRequest {

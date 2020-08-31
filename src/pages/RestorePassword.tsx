@@ -1,21 +1,43 @@
-import React from "react";
-import { Page, Button, PublicRouteLayout } from "../components";
-import { Form, Input } from "antd";
+import React, { useState } from "react";
+import { Page, Button, PublicRouteLayout, CustomForm } from "../components";
+import { Alert, Form, Input } from "antd";
+import { useAuth } from "../hooks";
+import { IServerError } from "../entity";
+import { useParams } from "react-router";
 
 const RestorePassword = () => {
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | undefined>(undefined);
+    const { code } = useParams();
+    const { restorePassword } = useAuth();
+
+    const onSubmit = (data: { newPassword: string; repeatNewPassword: string }) => {
+        restorePassword({
+            ...data,
+            code: String(code),
+        })
+            .then(() => setSuccess(true))
+            .catch((e: IServerError) => setError(e.message));
+    };
+
     return (
         <Page title={"Восстановление пароля"}>
             <PublicRouteLayout>
-                <Form layout="vertical">
+                <CustomForm
+                    onSubmit={onSubmit}
+                    formProps={{
+                        layout: "vertical",
+                    }}
+                >
                     <Form.Item
-                        name={"password"}
+                        name={"newPassword"}
                         label={"Пароль"}
                         rules={[{ type: "string", min: 6, max: 100, required: true }]}
                     >
                         <Input.Password placeholder={"Пароль"} />
                     </Form.Item>
                     <Form.Item
-                        name={"repeatPassword"}
+                        name={"repeatNewPassword"}
                         label={"Повтор пароля"}
                         rules={[
                             { min: 6, max: 100, required: true },
@@ -38,7 +60,9 @@ const RestorePassword = () => {
                             Войти
                         </Button>
                     </Form.Item>
-                </Form>
+                </CustomForm>
+                {success && <Alert message={"Пароль успешно изменен!"} type={"success"} />}
+                {error && <Alert message={error} type={"error"} />}
             </PublicRouteLayout>
         </Page>
     );

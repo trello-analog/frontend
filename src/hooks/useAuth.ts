@@ -1,23 +1,22 @@
 import {
     ICreateUserRequest,
     IId,
-    IResponse,
     IRestorePasswordRequest,
     ISendTwoAuthCodeRequest,
     ISignInRequest,
     ISignInTwoAuth,
-    IToken,
+    ITokenResponse,
     IUser,
 } from "../entity";
 import { AuthAPI } from "../api";
 
 export function useAuth(): {
     signUp: (data: ICreateUserRequest) => Promise<IId>;
-    signIn: (data: ISignInRequest) => Promise<IToken | IResponse<ISignInTwoAuth>>;
+    signIn: (data: ISignInRequest) => Promise<ITokenResponse | ISignInTwoAuth>;
     login: () => Promise<IUser>;
-    forgotPassword: (email: string) => Promise<IResponse>;
-    sendTwoAuthCode: (data: ISendTwoAuthCodeRequest) => Promise<IToken>;
-    restorePassword: (data: IRestorePasswordRequest) => Promise<IResponse>;
+    forgotPassword: (email: string) => Promise<undefined>;
+    sendTwoAuthCode: (data: ISendTwoAuthCodeRequest) => Promise<ITokenResponse>;
+    restorePassword: (data: IRestorePasswordRequest) => Promise<undefined>;
 } {
     const signUp = (data: ICreateUserRequest) => {
         return AuthAPI.signUp(data);

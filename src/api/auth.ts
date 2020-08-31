@@ -2,12 +2,11 @@ import { transport } from "../services";
 import {
     ICreateUserRequest,
     ICreateUserResponse,
-    IResponse,
     IRestorePasswordRequest,
     ISendTwoAuthCodeRequest,
     ISignInRequest,
     ISignInTwoAuth,
-    IToken,
+    ITokenResponse,
     IUser,
 } from "../entity";
 
@@ -16,10 +15,7 @@ export function signUp(data: ICreateUserRequest) {
 }
 
 export function signIn(data: ISignInRequest) {
-    return transport.post<IToken | IResponse<ISignInTwoAuth>, ISignInRequest>(
-        "/auth/sign-in",
-        data,
-    );
+    return transport.post<ITokenResponse | ISignInTwoAuth, ISignInRequest>("/auth/sign-in", data);
 }
 
 export function login() {
@@ -27,13 +23,19 @@ export function login() {
 }
 
 export function send2AuthCode(data: ISendTwoAuthCodeRequest) {
-    return transport.post<IToken, { code: string }>("/auth/two-auth", data);
+    return transport.post<ITokenResponse, ISendTwoAuthCodeRequest>("/auth/two-auth", data);
 }
 
 export function sendRestoringEmail(email: string) {
-    return transport.post<IResponse, { email: string }>("/auth/forgot-password", { email });
+    return transport.post<undefined, { email: string }>("/auth/forgot-password", { email });
 }
 
 export function restorePassword(data: IRestorePasswordRequest) {
-    return transport.post<IResponse, IRestorePasswordRequest>("/auth/restore-password", data);
+    return transport.post<undefined, IRestorePasswordRequest>("/auth/restore-password", data);
+}
+
+export function resendTwoAuthCode(checkCode: string) {
+    return transport.post<ISignInTwoAuth, { checkCode: string }>("/auth/resend-two-auth", {
+        checkCode,
+    });
 }

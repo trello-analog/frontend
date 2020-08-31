@@ -1,10 +1,10 @@
-import React from "react";
-import { Checkbox, Form, Input } from "antd";
+import React, { useEffect, useState } from "react";
+import { Alert, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
-import { PublicRouteLayout, Page, Button } from "../components";
+import { PublicRouteLayout, Page, Button, CustomForm } from "../components";
 import { css } from "emotion";
 import { useAuth } from "../hooks";
-import { ICreateUserRequest } from "../entity";
+import { ICreateUserRequest, IErrorResponse, IServerError } from "../entity";
 
 const styles = {
     actions: css`
@@ -26,16 +26,32 @@ const validateMessages = {
 };
 
 const Registration = () => {
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [form] = Form.useForm();
+
     const { signUp } = useAuth();
+
+    const onSubmit = (data: ICreateUserRequest) => {
+        signUp(data)
+            .then(() => {
+                setSuccess(true);
+                form.resetFields();
+            })
+            .catch((e: IServerError) => setError(e.message));
+    };
 
     return (
         <Page title={"Регистрация"}>
             <PublicRouteLayout>
-                <Form
-                    validateMessages={validateMessages}
-                    onFinish={console.log}
-                    layout="vertical"
-                    initialValues={{ twoAuth: false }}
+                <CustomForm
+                    onSubmit={onSubmit}
+                    formProps={{
+                        form,
+                        validateMessages,
+                        layout: "vertical",
+                        initialValues: { twoAuth: false },
+                    }}
                 >
                     <Form.Item
                         name={"email"}
@@ -87,7 +103,16 @@ const Registration = () => {
                             Войти
                         </Link>
                     </div>
-                </Form>
+                </CustomForm>
+                {success && (
+                    <Alert
+                        message={
+                            "Вы успешно зарегистрировались! Для верификации Вашего аккаунта пройдите по ссылке, отпраленной на вашу электронную почу"
+                        }
+                        type={"success"}
+                    />
+                )}
+                {error && <Alert message={error} type={"error"} />}
             </PublicRouteLayout>
         </Page>
     );

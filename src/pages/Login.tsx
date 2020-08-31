@@ -1,8 +1,9 @@
 import React from "react";
 import { css } from "emotion";
-import { Form, Input } from "antd";
+import { Alert, Form, Input } from "antd";
 import { Link } from "react-router-dom";
-import { PublicRouteLayout, Page, Button } from "../components";
+import { PublicRouteLayout, Page, Button, CustomForm } from "../components";
+import { useSignIn } from "../hooks";
 
 const styles = {
     actions: css`
@@ -10,6 +11,10 @@ const styles = {
     `,
     right: css`
         margin-left: auto;
+    `,
+    popupContent: css`
+        display: grid;
+        grid-row-gap: 20px;
     `,
 };
 
@@ -24,10 +29,18 @@ const validateMessages = {
 };
 
 const Login = () => {
+    const { error, signIn } = useSignIn();
+
     return (
         <Page title={"Войти"}>
             <PublicRouteLayout>
-                <Form validateMessages={validateMessages} onFinish={console.log} layout="vertical">
+                <CustomForm
+                    onSubmit={signIn}
+                    formProps={{
+                        validateMessages,
+                        layout: "vertical",
+                    }}
+                >
                     <Form.Item
                         name={"login"}
                         label={"Email или логин"}
@@ -53,7 +66,12 @@ const Login = () => {
                             Не помню пароль
                         </Link>
                     </div>
-                </Form>
+                </CustomForm>
+                {error && (
+                    <Alert message={error} type={"error"}>
+                        {error}
+                    </Alert>
+                )}
             </PublicRouteLayout>
         </Page>
     );

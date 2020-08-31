@@ -1,9 +1,11 @@
-import React from "react";
-import { Form, Input } from "antd";
+import React, { useState } from "react";
+import { Alert, Form, Input } from "antd";
 import { css } from "emotion";
 import { Typography } from "antd";
 import { Link } from "react-router-dom";
-import { Page, PublicRouteLayout, Button } from "../components";
+import { Page, PublicRouteLayout, Button, CustomForm } from "../components";
+import { useAuth } from "../hooks";
+import { IServerError } from "../entity";
 
 const styles = {
     actions: css`
@@ -22,10 +24,26 @@ const validateMessages = {
 };
 
 const ForgotPassword = () => {
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<undefined | string>(undefined);
+    const { forgotPassword } = useAuth();
+
+    const onSubmit = (data: { email: string }) => {
+        forgotPassword(data.email)
+            .then(() => setSuccess(true))
+            .catch((e: IServerError) => setError(e.message));
+    };
+
     return (
         <Page title={"Восстановление пароля"}>
             <PublicRouteLayout>
-                <Form validateMessages={validateMessages} onFinish={console.log} layout="vertical">
+                <CustomForm
+                    onSubmit={onSubmit}
+                    formProps={{
+                        validateMessages,
+                        layout: "vertical",
+                    }}
+                >
                     <Typography.Text>
                         Введите e-mail аккаунта, к которому вы хотите получить доступ
                     </Typography.Text>
@@ -43,7 +61,14 @@ const ForgotPassword = () => {
                             Войти
                         </Link>
                     </div>
-                </Form>
+                </CustomForm>
+                {success && (
+                    <Alert
+                        message={"Инструкции по восстановлению пароля отправлены вам на e-mail"}
+                        type={"success"}
+                    />
+                )}
+                {error && <Alert message={error} type={"error"} />}
             </PublicRouteLayout>
         </Page>
     );
