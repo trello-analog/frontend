@@ -36,9 +36,13 @@ const Registration = () => {
         signUp(data)
             .then(() => {
                 setSuccess(true);
+                setError(null);
                 form.resetFields();
             })
-            .catch((e: IServerError) => setError(e.message));
+            .catch((e: IServerError) => {
+                setError(e.message);
+                setSuccess(false);
+            });
     };
 
     return (
@@ -104,7 +108,7 @@ const Registration = () => {
                         </Link>
                     </div>
                 </CustomForm>
-                {success && (
+                {success && !error && (
                     <Alert
                         message={
                             "Вы успешно зарегистрировались! Для верификации Вашего аккаунта пройдите по ссылке, отпраленной на вашу электронную почу"
@@ -112,7 +116,7 @@ const Registration = () => {
                         type={"success"}
                     />
                 )}
-                {error && <Alert message={error} type={"error"} />}
+                {error && !success && <Alert message={error} type={"error"} />}
             </PublicRouteLayout>
         </Page>
     );

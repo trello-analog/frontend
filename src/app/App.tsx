@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { Route, Switch } from "react-router";
-import { IUser } from "../entity";
+import { IConfig, IUser } from "../entity";
 import {
     LoadableForgotPassword,
     LoadableLogin,
@@ -9,6 +9,10 @@ import {
 } from "./AsyncRoutes";
 import { IAppContext } from "../entity/context";
 import useModal from "antd/es/modal/useModal";
+import { transport } from "../services";
+
+const config: IConfig = require("../config/config.json");
+transport.init(config.serverUrl);
 
 export const AppContext = createContext<IAppContext>({
     auth: false,

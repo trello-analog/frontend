@@ -1,16 +1,19 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { IConfig, IResponse, IToken } from "../entity";
+import { IResponse, IToken } from "../entity";
 import { getServerError } from "../utils";
 
-const config: IConfig = require("../config/config.json");
-
 export class HttpTransport {
-    private client: AxiosInstance = axios.create({
-        baseURL: config.serverUrl,
-    });
+    // @ts-ignore
+    private client: AxiosInstance = null;
 
     private token?: IToken;
     private readonly handlers: Array<(error?: Error) => void> = [];
+
+    public init(serverUrl: string) {
+        this.client = axios.create({
+            baseURL: serverUrl,
+        });
+    }
 
     public subscribe(handler: (error?: Error) => void): void {
         this.handlers.push(handler);
@@ -97,6 +100,7 @@ export class HttpTransport {
     private config(params?: object): Pick<AxiosRequestConfig, "params" | "headers"> {
         return {
             headers: {
+                "Content-Type": "application/json",
                 "access-token": this.token?.accessToken,
                 "refresh-token": this.token?.refreshToken,
             },
