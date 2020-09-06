@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Alert, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import { PublicRouteLayout, Page, Button, CustomForm } from "../components";
 import { css } from "emotion";
 import { useAuth } from "../hooks";
-import { ICreateUserRequest, IErrorResponse, IServerError } from "../entity";
+import { ICreateUserRequest, IServerError } from "../entity";
 
 const styles = {
     actions: css`
@@ -33,6 +33,8 @@ const Registration = () => {
     const { signUp } = useAuth();
 
     const onSubmit = (data: ICreateUserRequest) => {
+        setError(null);
+        setSuccess(false);
         signUp(data)
             .then(() => {
                 setSuccess(true);
@@ -98,7 +100,7 @@ const Registration = () => {
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" fullWidth>
-                            Войти
+                            Регистрация
                         </Button>
                     </Form.Item>
                     <div className={styles.actions}>
