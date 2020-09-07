@@ -6,6 +6,7 @@ import {
     LoadableLogin,
     LoadableRegistration,
     LoadableRestorePassword,
+    LoadableConfirmation,
 } from "./AsyncRoutes";
 import { IAppContext } from "../entity/context";
 import useModal from "antd/es/modal/useModal";
@@ -44,6 +45,9 @@ export const App = () => {
                 </Route>
                 <Route path={"/restore-password/:code"} exact>
                     <LoadableRestorePassword />
+                </Route>
+                <Route path={"/confirm"} exact>
+                    <LoadableConfirmation />
                 </Route>
             </Switch>
             {contextHolder}

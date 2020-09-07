@@ -45,3 +45,8 @@ export interface ISendTwoAuthCodeRequest {
     checkCode: string;
     code: string;
 }
+
+export interface IConfirmUserRequest {
+    code: string;
+    email: string;
+}
