@@ -50,3 +50,10 @@ export interface IConfirmUserRequest {
     code: string;
     email: string;
 }
+
+export type TConfirmUserStatus = "success" | "info" | "error";
+
+export interface IConfirmUserResponse {
+    status: TConfirmUserStatus;
+    message: string;
+}

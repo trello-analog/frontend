@@ -1,45 +1,69 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useConfirmUser, useQuery } from "../hooks";
-import { Result } from "antd";
+import { Alert, Result } from "antd";
 import { useHistory } from "react-router";
-import { Button } from "../components";
+import { Button, Page } from "../components";
+import { css } from "emotion";
+
+const styles = {
+    alertWrapper: css`
+        display: flex;
+        justify-content: center;
+    `,
+    alert: css`
+        width: fit-content;
+        margin-top: 20px;
+    `,
+};
 
 const Confirmation = () => {
     const code = useQuery("code");
     const email = useQuery("email");
-    const { status, error, resendConfirm, confirmUser, resendEnable } = useConfirmUser(code, email);
+    const { response, resendConfirm, confirmUser } = useConfirmUser(code, email);
     const history = useHistory();
+    const [resendSuccess, setResendSuccess] = useState(false);
 
     useEffect(() => {
         confirmUser();
     }, []);
 
-    return status ? (
-        <>
-            {status === "success" && (
+    const resend = () => {
+        resendConfirm().then(() => {
+            setResendSuccess(true);
+        });
+    };
+
+    return response ? (
+        <Page title={"Подтверждение юзера"}>
+            {response.status === "error" ? (
                 <Result
-                    status={status}
-                    title={"Аккаунт верифицирован!"}
-                    extra={[<Button onClick={() => history.push("/")}>На главную</Button>]}
-                />
-            )}
-            {status === "error" && (
-                <Result
-                    status={status}
-                    title={"Что-то пошло не так..."}
-                    subTitle={error}
+                    status={response.status}
+                    title={response.message}
                     extra={[
                         <>
-                            {resendEnable && (
-                                <Button onClick={resendConfirm}>
-                                    Отправить код подтверждения заново
-                                </Button>
+                            <Button type={"primary"} onClick={resend}>
+                                Отправить код подтверждения заново
+                            </Button>
+                            {resendSuccess && (
+                                <div className={styles.alertWrapper}>
+                                    <Alert
+                                        className={styles.alert}
+                                        type={"success"}
+                                        message={`Новый код отправлен на ${email}`}
+                                    />
+                                </div>
                             )}
                         </>,
                     ]}
                 />
+            ) : (
+                <Result
+                    status={response.status}
+                    title={response.message}
+                    extra={[<Button onClick={() => history.push("/")}>На главную</Button>]}
+                />
             )}
-        </>
+        </Page>
     ) : (
         <></>
     );

@@ -1,6 +1,7 @@
 import { transport } from "../services";
 import {
     IConfirmUserRequest,
+    IConfirmUserResponse,
     ICreateUserRequest,
     ICreateUserResponse,
     IRestorePasswordRequest,
@@ -42,7 +43,7 @@ export function resendTwoAuthCode(checkCode: string) {
 }
 
 export function confirmUser(data: IConfirmUserRequest) {
-    return transport.post<undefined, IConfirmUserRequest>("/auth/confirm", data);
+    return transport.post<IConfirmUserResponse, IConfirmUserRequest>("/auth/confirm", data);
 }
 
 export function resendConfirmMessage(email: string) {
