@@ -12,9 +12,17 @@ const RestorePassword = () => {
     const { restorePassword, response } = useRestorePassword(code);
 
     const onSubmit = (data: { newPassword: string; repeatNewPassword: string }) => {
+        setError(undefined);
+        setSuccess(false);
         restorePassword(data)
-            .then(() => setSuccess(true))
-            .catch((e: IServerError) => setError(e.message));
+            .then(() => {
+                setSuccess(true);
+                setError(undefined);
+            })
+            .catch((e: IServerError) => {
+                setError(e.message);
+                setSuccess(false);
+            });
     };
 
     return (
@@ -41,7 +49,7 @@ const RestorePassword = () => {
                                 { min: 6, max: 100, required: true },
                                 ({ getFieldValue }) => ({
                                     validator(rule, value) {
-                                        if (!value || getFieldValue("password") === value) {
+                                        if (!value || getFieldValue("newPassword") === value) {
                                             return Promise.resolve();
                                         }
                                         return Promise.reject(
