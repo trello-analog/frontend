@@ -29,9 +29,17 @@ const ForgotPassword = () => {
     const { forgotPassword } = useAuth();
 
     const onSubmit = (data: { email: string }) => {
+        setSuccess(false);
+        setError(undefined);
         forgotPassword(data.email)
-            .then(() => setSuccess(true))
-            .catch((e: IServerError) => setError(e.message));
+            .then(() => {
+                setSuccess(true);
+                setError(undefined);
+            })
+            .catch((e: IServerError) => {
+                setError(e.message);
+                setSuccess(false);
+            });
     };
 
     return (
@@ -47,7 +55,11 @@ const ForgotPassword = () => {
                     <Typography.Text>
                         Введите e-mail аккаунта, к которому вы хотите получить доступ
                     </Typography.Text>
-                    <Form.Item name={"email"} label={"Email"} rules={[{ required: true }]}>
+                    <Form.Item
+                        name={"email"}
+                        label={"Email"}
+                        rules={[{ required: true, type: "email" }]}
+                    >
                         <Input placeholder={"Email"} />
                     </Form.Item>
                     <Form.Item>

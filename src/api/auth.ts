@@ -49,3 +49,7 @@ export function confirmUser(data: IConfirmUserRequest) {
 export function resendConfirmMessage(email: string) {
     return transport.post<undefined, { email: string }>("/auth/resend-confirm", { email });
 }
+
+export function checkCode(code: string) {
+    return transport.get<IConfirmUserResponse>(`/auth/restore-password/${code}`);
+}
