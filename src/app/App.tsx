@@ -11,6 +11,7 @@ import {
 import { IAppContext } from "../entity/context";
 import useModal from "antd/es/modal/useModal";
 import { transport } from "../services";
+import { useLogin } from "../hooks";
 
 const config: IConfig = require("../config/config.json");
 transport.init(config.serverUrl);
@@ -26,10 +27,15 @@ export const App = () => {
     const [auth, setAuth] = useState(false);
     const [user, setUser] = useState<IUser | undefined>(undefined);
     const [modal, contextHolder] = useModal();
+    const { login } = useLogin();
 
     useEffect(() => {
         setAuth(!!user);
     }, [user]);
+
+    useEffect(() => {
+        login();
+    }, [auth, login]);
 
     return (
         <AppContext.Provider value={{ auth, user, setUser, modal }}>

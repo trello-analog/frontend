@@ -28,6 +28,10 @@ export function send2AuthCode(data: ISendTwoAuthCodeRequest) {
     return transport.post<ITokenResponse, ISendTwoAuthCodeRequest>("/auth/two-auth", data);
 }
 
+export function resend2AuthCode(userId: number) {
+    return transport.post<ISignInTwoAuth, { userId: number }>("/auth/resend-two-auth", { userId });
+}
+
 export function sendRestoringEmail(email: string) {
     return transport.post<undefined, { email: string }>("/auth/forgot-password", { email });
 }

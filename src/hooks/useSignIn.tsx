@@ -1,47 +1,52 @@
 import { IServerError, ISignInRequest, ISignInTwoAuth, ITokenResponse } from "../entity";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 import { useHistory } from "react-router";
 import { transport } from "../services";
 import { AppContext } from "../app";
-import { Input } from "antd";
-import { Typography } from "antd";
-
-const { Text } = Typography;
+import { AuthAPI } from "../api";
 
 export function useSignIn(): {
     error: string | undefined;
     signIn: (data: ISignInRequest) => Promise<void>;
+    modal: boolean;
+    expired: number;
+    sendTwoAuth: (code: string) => void;
+    closeModal: () => void;
+    resendTwoAuth: () => Promise<void>;
 } {
     const [error, setError] = useState<string | undefined>(undefined);
-    const [checkCode, setCheckCode] = useState<string | undefined>(undefined);
+    const [userId, setUserId] = useState<number | undefined>(undefined);
     const { signIn: signInHandler, login, sendTwoAuthCode } = useAuth();
     const history = useHistory();
     const context = useContext(AppContext);
-    const [code, setCode] = useState("");
+    const [expired, setExpired] = useState(0);
+    const [modal, setModal] = useState(false);
 
-    const modalContent = (
-        <AppContext.Consumer
-            children={() => (
-                <>
-                    <Text>На ваш e-mail отправлено письмо с кодом</Text>
-                    <Input
-                        placeholder={"Код"}
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                    />
-                </>
-            )}
-        />
-    );
+    useEffect(() => {
+        let interval: any;
+        if (expired && expired >= 0) {
+            interval = setTimeout(() => {
+                setExpired((expired) => expired - 1);
+            }, 1000);
 
-    const sendTwoAuth = () => {
-        if (checkCode) {
+            if (expired === 0 || !modal) {
+                clearInterval(interval);
+            }
+        }
+
+        return () => clearTimeout(interval);
+    });
+
+    const sendTwoAuth = (code: string) => {
+        setError(undefined);
+        if (userId) {
             sendTwoAuthCode({
                 code,
-                checkCode,
+                userId,
             })
                 .then((response) => {
+                    console.log(response);
                     transport
                         .setToken(response.token)
                         .then(() => {
@@ -57,30 +62,43 @@ export function useSignIn(): {
     };
 
     const signIn = (data: ISignInRequest) => {
-        return signInHandler(data).then((response) => {
-            if ((response as ITokenResponse).token) {
-                transport
-                    .setToken((response as ITokenResponse).token)
-                    .then(() => {
-                        login().then((user) => {
-                            context.setUser(user);
-                            history.push("/dashboards");
+        setError(undefined);
+        return signInHandler(data)
+            .then((response) => {
+                if ((response as ITokenResponse).token) {
+                    transport
+                        .setToken((response as ITokenResponse).token)
+                        .then(() => {
+                            login().then((user) => {
+                                context.setUser(user);
+                                history.push("/dashboards");
+                            });
+                        })
+                        .catch((e: IServerError) => {
+                            setError(e.message);
                         });
-                    })
-                    .catch((e: IServerError) => setError(e.message));
-            }
-            if ((response as ISignInTwoAuth).checkCode) {
-                setCheckCode((response as ISignInTwoAuth).checkCode);
-                context.modal?.confirm({
-                    title: "Введите код для двухфакторной аутентификации",
-                    content: modalContent,
-                    cancelText: "Отмена",
-                    visible: true,
-                    onOk: sendTwoAuth,
-                });
-            }
-        });
+                }
+                if ((response as ISignInTwoAuth).userId) {
+                    setModal(true);
+                    setUserId((response as ISignInTwoAuth).userId);
+                    const exp = (response as ISignInTwoAuth).expired;
+                    setExpired(exp);
+                }
+            })
+            .catch((e: IServerError) => {
+                setError(e.message);
+            });
     };
 
-    return { error, signIn };
+    const closeModal = () => setModal(false);
+
+    const resendTwoAuth = () => {
+        return AuthAPI.resend2AuthCode(Number(userId))
+            .then((response) => setExpired(response.expired))
+            .catch((e: IServerError) => {
+                setError(e.message);
+            });
+    };
+
+    return { error, signIn, modal, expired, sendTwoAuth, closeModal, resendTwoAuth };
 }

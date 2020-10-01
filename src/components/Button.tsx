@@ -15,7 +15,7 @@ const styles = {
 };
 
 export const Button: FC<IProps> = ({ fullWidth, children, ...rest }) => (
-    <AntdButton {...rest} className={cn(fullWidth && styles.fullWidth)}>
+    <AntdButton {...rest} className={cn(rest.className, fullWidth && styles.fullWidth)}>
         {children}
     </AntdButton>
 );

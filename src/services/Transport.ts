@@ -19,6 +19,15 @@ export class HttpTransport {
         this.handlers.push(handler);
     }
 
+    public getToken(): IToken | undefined {
+        const localStorageToken = localStorage.getItem("token");
+        if (!localStorageToken) {
+            return undefined;
+        }
+
+        return JSON.parse(localStorageToken);
+    }
+
     public async setToken(token: IToken): Promise<void> {
         this.token = token;
         localStorage.setItem("token", JSON.stringify(token));

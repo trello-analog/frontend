@@ -11,7 +11,7 @@ export interface ICreateUserRequest {
 export type ICreateUserResponse = IId;
 
 export interface ISignInRequest {
-    email: string;
+    name: string;
     password: string;
 }
 
@@ -37,12 +37,12 @@ export interface ITokenResponse {
 }
 
 export interface ISignInTwoAuth {
-    checkCode: string;
-    expired: string;
+    userId: number;
+    expired: number;
 }
 
 export interface ISendTwoAuthCodeRequest {
-    checkCode: string;
+    userId: number;
     code: string;
 }
 
